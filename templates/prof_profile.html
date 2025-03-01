@@ -1,0 +1,154 @@
+{% extends 'prof_layout.html' %}
+{% block title %}
+    Professional Profile
+{% endblock %}
+
+{% block styles %}
+.container{
+    display:flex;
+    flex-direction:column;
+}
+
+.c1{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+}
+
+.table {
+    max-width: 100%;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.table tbody tr td {
+    padding-left: 10px; 
+    text-align:center;
+    padding-right:0px;
+}
+
+.table thead th {
+    padding-left: 10px; 
+    text-align:center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+   
+}
+
+.table thead th.action-column  {
+    text-align: center;
+}
+
+
+.action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="container0 mt-5">
+        <h1 class="text-center text-underline">{{professional.username}}</h1>
+        <p class="text-center">{{professional.bio}}</p>
+    </div>
+    <div class="c1">
+        <p>Service : {{professional.service.name}}</p>
+        <p>Base Price: {{professional.service.base_price}}</p>
+    </div>
+    <div class="c1">
+        <p>City : {{professional.city}}</p>
+        <p>Experience: {{professional.experience}} years</p>
+    </div>
+
+    <hr>
+    <div class="container1 mt-4">
+        {% if request1 %}
+        <h1 class="text-center mt-5 text-decoration-underline">Requests for Service</h1>
+        <table class="table align-middle table-striped-column table-hover table-light mt-5">
+            <thead class="table-dark">
+                <tr class="table-active">
+                    <th>Request ID</th>
+                    <th>Customer</th>
+                    <th>Request Date</th>
+                    <th>Price</th>
+                    <th>Address</th>
+                    <th class="action-column">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in request1 %}
+                        <tr>
+                            <td>{{ request.service_req_id }}</td>
+                            <td>{{ request.customer.username }}</td>
+                            <td>{% if request.date_of_request %}{{ request.date_of_request.strftime('%d %m %y') }}{% else %} N/A{% endif %}</td>
+                            <td>{{ request.offered_price}}</td>
+                            <td>{{ request.Address}}</td>
+                            <td class="action-buttons">
+                                {% if request.status=="requested" %}
+                                <form method="POST" action="{{ url_for('accept_service_request',service_req_id=request.service_req_id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-success" >Accept</button>
+                                </form>
+                                <form method="POST" action="{{ url_for('reject_service_request',service_req_id=request.service_req_id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger" >Reject</button>
+                                </form>
+                                {% endif %}
+                                {%if request.status=="assigned"%}
+                                <form method="POST" action="{{ url_for('close_sr_prof',service_req_id=request.service_req_id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-info" >Close</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+           <h1 class="text-center mt-4"> No live requests </h1>
+        {% endif %}
+    </div>
+
+    <div class="container2 mt-5">
+        <h1 class="text-center mt-5 text-decoration-underline">Closed Requests</h1>
+        {% if request2 %}
+        <table class="table align-middle table-striped-column table-hover table-light mt-5">
+            <thead class="table-dark">
+                <tr class="table-active">
+                    <th>Request ID</th>
+                    <th>Customer</th>
+                    <th>Request Date</th>
+                    <th>Price</th>
+                    <th>Completion Date</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in request2 %}
+                        <tr>
+                            <td>{{ request.service_req_id }}</td>
+                            <td>{{ request.customer.username }}</td>
+                            <td>{% if request.date_of_request %}{{ request.date_of_request.strftime('%d %m %y') }}{% else %} N/A{% endif %}</td>
+                            <td>{{ request.offered_price}}</td>
+                            <td>{% if request.date_of_request %}{{ request.date_of_request.strftime('%d %m %y') }}{% else %} N/A{% endif %}</td>
+                            <td>{% if request.rating%}{{request.rating}}{% else %} N/A{% endif %}</td>
+                        </tr>
+                {% endfor %}
+              
+            </tbody>
+        </table>
+        {% else %}
+           <h1 class="text-center mt-3">No closed requests </h1>
+        {% endif %}
+
+    </div>
+
+   
+
+
+</div>
+{% endblock %}

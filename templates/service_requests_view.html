@@ -1,0 +1,85 @@
+{% extends 'admin_layout.html' %}
+{% block title %}
+    All Service Requests 
+{% endblock %}
+
+{% block styles %}
+.table {
+    max-width: 85%;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.table tbody tr td {
+    padding-left: 40px; 
+}
+
+.table thead th {
+    padding-left: 40px; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.table thead th.action-column  {
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center mt-5 text-decoration-underline">All Service Requests</h1>
+
+{% if requests %}
+<table class="table align-middle table-striped-column table-hover table-light mt-5">
+    <thead class="table-dark">
+        <tr class="table-active">
+            <th>Request ID</th>
+            <th>Service</th>
+            <th>Customer</th>
+            <th>Professional</th>
+            <th>Offered Price</th>
+            <th>Request Date</th>
+            <th>Status</th>
+            <th>Completion Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+        <tr>
+            <td>{{ request.service_req_id }}</td>
+            <td>{{ request.service.name }}</td>
+            <td>{{ request.customer.username}}</td>
+            <td>{{ request.professional.username}}</td>
+            <td>{{request.offered_price}}</td>
+
+            <td>{{ request.date_of_request.strftime('%Y-%m-%d')}}</td>
+            <td>{{ request.status}}</td>
+            <td>
+                {% if request.date_of_completion %}
+                    {{ request.date_of_completion.strftime('%Y-%m-%d') }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('delete_service_request',service_req_id=request.service_req_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the service request?')">Delete</button>
+                </form>
+            </td>
+
+           
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h1 class="text-center mt-5">No service requests found.</h1>
+{% endif %}
+
+{% endblock %}

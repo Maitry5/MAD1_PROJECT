@@ -1,0 +1,142 @@
+{% extends 'customer_layout.html' %}
+{% block title %}
+    Requests History
+{% endblock %}
+
+{% block styles %}
+.container{
+    display:flex;
+    flex-direction:column;
+}
+
+.table {
+    max-width: 100%;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.table tbody tr td {
+    padding-left: 10px; 
+    text-align:center;
+    padding-right:0px;
+}
+
+.table thead th {
+    padding-left: 10px; 
+    text-align:center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+   
+}
+
+.table thead th.action-column  {
+    text-align: center;
+}
+
+
+.action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="container1 mt-5">
+        <h1 class="text-center mt-5 text-decoration-underline">Closed Requests</h1>
+
+        {% if requests %}
+        <table class="table align-middle table-striped-column table-hover table-light mt-5">
+            <thead class="table-dark">
+                <tr class="table-active">
+                    <th>Request ID</th>
+                    <th>Service</th>
+                    <th>Professional</th>
+                    <th>Request Date</th>
+                    <th>Price</th>
+                    <th>Completion Date</th>
+                    <th class="action-column">Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                    {% if request.status=="closed"%}
+                        <tr>
+                            <td>{{ request.service_req_id }}</td>
+                            <td>{{ request.service.name }}</td>
+                            <td>{{ request.professional.username }}</td>
+                            <td>{% if request.date_of_request %}{{ request.date_of_request.strftime('%d %m %y') }}{% else %} N/A{% endif %}</td>
+                            <td>{{ request.offered_price}}</td>
+                            <td>{% if request.date_of_completion %}{{ request.date_of_completion.strftime('%d %m %y') }}{% else %} N/A{% endif %}</td>
+                            <td class="action-buttons">
+                                {% if request.rating %}
+                                    <span>{{ request.rating }} / 5</span>
+                                {% else %}
+                                    <form action="{{url_for("rate_sr",service_req_id=request.service_req_id,customer_id=request.customer_id)}}" method="post">
+                                        <select name="rating"  class="btn btn-info" required>
+                                            <option value="">Rate...</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-success"> Submit</button>
+                                    </form>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center mt-5">No closed service request.</h1>
+        {% endif %}
+    </div>
+
+    <div class="container2 mt-5">
+        <h1 class="text-center mt-5 text-decoration-underline">Rejected Requests</h1>
+        {% if requests %}
+        <table class="table align-middle table-striped-column table-hover table-light mt-5">
+            <thead class="table-dark">
+                <tr class="table-active">
+                    <th>Request ID</th>
+                    <th>Service</th>
+                    <th>Professional</th>
+                    <th>Request Date</th>
+                    <th>Price</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                    {% if request.status=="rejected"%}
+                        <tr>
+                            <td>{{ request.service_req_id }}</td>
+                            <td>{{ request.service.name }}</td>
+                            <td>{{ request.professional.username }}</td>
+                            <td>{% if request.date_of_request %}{{ request.date_of_request.strftime('%d %m %y') }}{% else %} N/A{% endif %}</td>
+                            <td>{{ request.offered_price}}</td>
+                            <td>{{ request.Address}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <h1 class="text-center mt-5">No rejected service request.</h1>
+        {% endif %}
+
+    </div>
+
+   
+
+
+</div>
+{% endblock %}

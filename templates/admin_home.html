@@ -1,0 +1,168 @@
+{% extends "admin_layout.html" %}
+{% block title %}
+    Admin Dashboard
+{% endblock %}
+
+{% block styles %}
+    .container{
+        display:flex;
+        flex-direction:column;
+        
+    }
+    .container-1{
+        height:120px;
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+
+        
+        
+    }
+    .container-1 > div:last-child {
+        padding-right: 20px; /* Add custom margin to the last item */
+      }
+    .container-3{
+        height:100px;
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+
+
+    }
+    .container-3 > div:last-child {
+        padding-right: 50px; /* Add custom margin to the last item */
+      }
+    .container-service{
+        padding:20px;
+        display:flex;
+        flex-direction:row;
+        flex-wrap:wrap;
+        justify-content: space-around;
+        border: 2px solid aqua; /* Test property */
+        background-color: lightblue; /* Test property */
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .table{
+        max-width:75%;
+        margin:auto;
+        border:1px solid black;
+        border-radius:10px;
+    }
+    
+    .table tbody tr td {
+        padding-left: 40px; 
+        
+    }
+    
+    .table thead th {
+        padding-left: 40px; 
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    
+    .table thead th.action-column  {
+        text-align:center;
+       
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content:space-evenly;
+        
+    }
+
+    .act{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-between;
+    }
+
+    .justified-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Limit to 4 lines */
+        -webkit-box-orient: vertical;
+        text-align: start;
+    }
+
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+    <div class="container-1 ">
+        <div class=" mt-5 fs-3 fw-semibold">
+            <img src="{{ url_for('static', filename='add.png') }}" alt="Add" width="50" height="50">
+            <a href="{{ url_for('add_service')}}"> Add a service</a>
+        </div>
+        <div class=" mt-5 fs-3 fw-semibold">
+            <img src="{{ url_for('static', filename='professionals.png') }}" alt="view_profsseionals" width="50" height="50">
+            <a href="{{ url_for('all_professionals')}}">All professionals</a>
+        </div>
+        
+    </div>
+    <div class="container-3">
+        <div class=" mb-3 fs-3 fw-semibold">
+            <img src="{{ url_for('static', filename='services.png') }}" alt="view service requests" width="50" height="50">
+            <a href="{{ url_for('all_service_requests')}}"> Recent service requests</a>
+        </div>
+       
+        <div class=" mb-3 fs-3 fw-semibold ">
+            <img src="{{ url_for('static', filename='customers.png') }}" alt="view_customers" width="50" height="50">
+            <a href="{{ url_for('all_customers')}}">All customers</a>
+        </div>
+
+
+       
+    </div>
+    <hr>
+    <div class="container-2">
+        <div class="text-center fs-2 fw-bold mt-4">
+          <p>All Services</p>
+        </div>
+        <div class="container-service mt-4">
+            <table class="table align-middle table-striped-column table-hover table-light mt-5" >
+                <thead class="table-dark">
+                    <tr  class="table-active">
+                        <th>ID</th>
+                        <th>Service Name</th>
+                        <th>Time Required</th>
+                        <th>Base price</th>
+                        <th class="action-column">Action</th>
+                    </tr>
+                </thead>
+                    {% for service in services %}
+                    <tr>
+                        <td>{{ service.service_id }}</td>
+                        <td>{{ service.name}}</td>
+                        <td>{{service.time_required}}</td>
+                        <td>{{service.base_price}}</td>
+                        <td class="action-buttons">
+                            <form method="POST" action="{{ url_for('edit_service', service_id=service.service_id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-success" >Edit</button>
+                            </form>
+                            
+                            <form method="POST" action="{{ url_for('view_service', service_id=service.service_id) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-primary" >View</button>
+                            </form>
+                        </td>
+                     </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block script %}
+
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'customer_layout.html' %}
+{% block title %}
+    Ongoing Requests 
+{% endblock %}
+
+{% block styles %}
+.table {
+    max-width: 85%;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.table tbody tr td {
+    padding-left: 20px; 
+    text-align:center;
+    padding-right:20px;
+}
+
+.table thead th {
+    padding-left: 20px; 
+    text-align:center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+   
+}
+
+.table thead th.action-column  {
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+{% endblock %}
+
+{% block content %}
+{% if requests %}
+<h1 class="text-center mt-5 text-decoration-underline">Live Requests</h1>
+<table class="table align-middle table-striped-column table-hover table-light mt-5">
+    <thead class="table-dark">
+        <tr class="table-active">
+            <th>Request ID</th>
+            <th>Service</th>
+            <th>Professional</th>
+            <th>Request Date</th>
+            <th>Status</th>
+            <th>Base Price</th>
+            <th>Offered Price</th>
+            <th class="action-column">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in requests %}
+        <tr>
+            <td>{{ request.service_req_id }}</td>
+            <td>{{ request.service.name }}</td>
+            <td>{{ request.professional.username }}</td>
+            <td>
+                {% if request.date_of_request %}
+                    {{ request.date_of_request.strftime('%d %m %y') }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>{{ request.status }}</td>
+            <td>{{ request.service.base_price}}</td>
+            <td>{{ request.offered_price}}</td>
+            <td class="action-buttons">
+                {% if request.status == 'requested' %}
+                <form method="GET" action="{{ url_for('edit_service_request',service_req_id=request.service_req_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-info" >Edit</button>
+                </form>
+                {% endif %}
+
+                {% if request.status == 'assigned' %}
+                <form method="POST" action="{{ url_for('close_service_request',service_req_id=request.service_req_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-success" >Close</button>
+                </form>
+                {% endif %}
+
+                
+                {% if request.status == 'closed' %}
+                <form method="GET" action="{{ url_for('review_service_request',service_req_id=request.service_req_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-primary" >Review</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h1 class="text-center mt-5">No live request found.</h1>
+{% endif %}
+
+{% endblock %}

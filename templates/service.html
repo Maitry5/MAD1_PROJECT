@@ -1,0 +1,84 @@
+{% extends "admin_layout.html" %}
+{% block title %}
+    {{service.name}}
+{% endblock %}
+
+{% block styles %}
+    .container{
+        
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:space-around;
+     
+        width:650px;
+        border: 2px solid aqua; 
+        background-color: lightblue;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding:30px;
+    }
+
+    .container p {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+    
+    .container p strong {
+        flex: 3; 
+    }
+    
+    .container p .colon {
+        flex: 0.1; 
+        text-align: center;
+    }
+    
+    .container p .value {
+        margin-left:20px;
+        flex: 3; 
+    }
+    
+
+  
+
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<h1 class="text-center text-decoration-underline mt-5 mb-5">{{service.name}}</h1>
+<div class="container">
+    <p><strong>Service ID</strong> <span class="colon">:</span> <span class="value">{{service.service_id}}</span></p>
+    <p><strong>Description</strong> <span class="colon">:</span> <span class="value">{{service.description}}</span></p>
+    <p><strong>Base price</strong> <span class="colon">:</span> <span class="value">INR {{service.base_price}}</span></p>
+    <p><strong>Time required</strong> <span class="colon">:</span> <span class="value">{{service.time_required}}</span></p>
+      <!-- Count verified professionals -->
+    <p><strong>No of Verified Professionals</strong> <span class="colon">:</span> 
+        <span class="value">{{ service.professionals | selectattr('verified', 'equalto', True) | list | length }}</span>
+    </p>
+    <p><strong>Total Service Requests</strong> <span class="colon">:</span>
+        <span class="value">{{ service.service_requests | length }}</span>
+    </p>
+    <p><strong>Average Rating</strong> <span class="colon">:</span> <span class="value"></span></p>
+</div>
+<form method="POST" class="text-center mt-5" action="{{ url_for('delete_service', service_id=service.service_id) }}">
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this service?')">Delete</button>
+</form>
+{% endblock %}
+
+    
+
+
+
+
+
+
+
+
+{% block script %}
+
+
+{% endblock %}

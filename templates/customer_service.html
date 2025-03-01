@@ -1,0 +1,70 @@
+{% extends 'customer_layout.html' %}
+{% block title %}
+  Professional for {{service.name}}
+{% endblock %}
+
+{% block styles %}
+.table{
+    max-width:80%;
+    margin:auto;
+    border:1px solid black;
+    border-radius:10px;
+}
+
+.table tbody tr td {
+    padding-left: 30px; 
+    padding-right:30px;
+}
+
+.table thead th {
+    padding-left: 30px; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+
+
+{% endblock %}
+   
+
+{% block content %}
+{% if professionals %}
+    <h1 class="text-center mt-5 text-decoration-underline">All professionals for  {{service.name}}</h1>
+
+    <table class="table align-middle table-striped-column table-hover table-light mt-5" >
+     <thead class="table-dark">
+        <tr  class="table-active">
+            <th>Name</th>
+            <th>Speciality</th>
+            <th>Experience</th>
+            <th>City</th>
+            <th>Ratings</th>
+            <th>  </th>
+        
+        </tr>
+     </thead>
+       <tbody>
+        {% for professional in professionals %}
+        <tr>
+            <td>{{ professional.username }}</td>
+            <td>{{ professional.bio }}</td>
+            <td>{{ professional.experience }} years</td>
+            <td>{{ professional.city }}</td>
+            <td>{{ professional.ratings }}</td>
+
+            
+            <td>
+                <form method="GET" action="{{ url_for('service_requests', professional_id=professional.prof_id,customer_id=customer.customer_id,service_id=service.service_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-success">Select</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+     </tbody>
+    </table>
+
+{% else %}
+<h1 class="text-center mt-5">No professionals for this service.</h1>
+{% endif %}
+{% endblock %}

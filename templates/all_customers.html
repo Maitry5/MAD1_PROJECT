@@ -1,0 +1,81 @@
+{% extends 'admin_layout.html' %}
+{% block title %}
+    All customers
+{% endblock %}
+
+{% block styles %}
+.table{
+    max-width:75%;
+    margin:auto;
+    border:1px solid black;
+    border-radius:10px;
+}
+
+.table tbody tr td {
+    padding-left: 40px; 
+    
+}
+
+.table thead th {
+    padding-left: 40px; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.table thead th.action-column  {
+    text-align:center;
+   
+}
+
+.action-buttons {
+    display: flex;
+    justify-content:space-evenly;
+    
+}
+
+
+{% endblock %}
+   
+
+{% block content %}
+<h1 class="text-center mt-5 text-decoration-underline">All customers </h1>
+
+{% if customers %}
+<table class="table align-middle table-striped-column table-hover table-light mt-5" >
+    <thead class="table-dark">
+        <tr  class="table-active">
+            <th>ID</th>
+            <th>Name</th>
+            <th>City</th>
+            <th>Total Requests</th>
+            <th class="action-column">Action</th>
+        </tr>
+    </thead>
+        {% for customer in customers %}
+        <tr>
+            <td>{{ customer.customer_id }}</td>
+            <td>{{ customer.username }}</td>
+            <td>{{ customer.city }}</td>
+            <td>{{ customer.service_requests|length  }}</td>
+            <td class="action-buttons">
+                {% if customer.block %}
+                <form method="POST" action="{{ url_for('unblock_customer', customer_id=customer.customer_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to unblock this customer?')">Unblock</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('block_customer', customer_id=customer.customer_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to block this customer?')">Block</button>
+                </form>
+                {% endif %}
+            </td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h1 class="text-center mt-5">No customers on the app.</h1>
+{% endif %}
+
+
+{% endblock %}

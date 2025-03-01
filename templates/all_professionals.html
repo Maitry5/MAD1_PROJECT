@@ -1,0 +1,83 @@
+{% extends 'admin_layout.html' %}
+{% block title %}
+    All verified professionals
+{% endblock %}
+
+{% block styles %}
+.table{
+    max-width:75%;
+    margin:auto;
+    border:1px solid black;
+    border-radius:10px;
+}
+
+.table tbody tr td {
+    padding-left: 40px; 
+    
+}
+
+.table thead th {
+    padding-left: 40px; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.table thead th.action-column  {
+    text-align:center;
+   
+}
+
+.action-buttons {
+    display: flex;
+    justify-content:space-evenly;
+    
+}
+
+
+{% endblock %}
+   
+
+{% block content %}
+<h1 class="text-center mt-5 text-decoration-underline">All professionals </h1>
+
+{% if professionals %}
+<table class="table align-middle table-striped-column table-hover table-light mt-5" >
+    <thead class="table-dark">
+        <tr  class="table-active">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Experience</th>
+            <th>Service Name</th>
+            <th>Total Requests</th>
+            <th class="action-column">Action</th>
+        </tr>
+    </thead>
+        {% for professional in professionals %}
+        <tr>
+            <td>{{ professional.prof_id }}</td>
+            <td>{{ professional.username }}</td>
+            <td>{{ professional.experience }} years</td>
+            <td>{{ professional.service.name }}</td>
+            <td>{{ professional.service_requests|length  }}</td>
+            <td class="action-buttons">
+                {% if professional.block %}
+                <form method="POST" action="{{ url_for('unblock_prof', prof_id=professional.prof_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to unblock this professional?')">Unblock</button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('block_prof', prof_id=professional.prof_id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to block this professional?')">Block</button>
+                </form>
+                {% endif %}
+            </td>
+         
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h1 class="text-center mt-5">No verified professionals.</h1>
+{% endif %}
+
+
+{% endblock %}
